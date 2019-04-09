@@ -1,4 +1,6 @@
 [![GoDoc](https://godoc.org/github.com/Bimde/httputils?status.svg)](https://godoc.org/github.com/Bimde/httputils)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Bimde/httputils)](https://goreportcard.com/report/github.com/Bimde/httputils)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Bimde/httputils/blob/master/LICENSE)
 
 # httputils
 net/http wrapper for easy outbound http requests in go.
