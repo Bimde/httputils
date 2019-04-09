@@ -12,8 +12,6 @@ import (
 	"net/http"
 	"time"
 
-	"config"
-
 	"github.com/sirupsen/logrus"
 )
 
@@ -27,43 +25,18 @@ func init() {
 	}
 }
 
-// Get performs a GET request using the net/http client.
-// Logging is done to the provided logger
-func Get(log *logrus.Entry, path string, body interface{}, output interface{}) error {
-	if log == nil {
-		log = logrus.WithField("method", "httputils#Get")
-	}
-	return genericRequest(http.MethodGet, log, path, body, output)
+// Client provides storage for data that doesn't need to change between requests
+type Client struct {
+	Username string
+	Password string
 }
 
-// Delete performs a DELETE request using the net/http client.
-// Logging is done to the provided logger
-func Delete(log *logrus.Entry, path string, body interface{}, output interface{}) error {
-	if log == nil {
-		log = logrus.WithField("method", "httputils#Delete")
-	}
-	return genericRequest(http.MethodDelete, log, path, body, output)
+// New creates and returns a new Client with custom properties
+func New(username string, password string) *Client {
+	return &Client{Username: username, Password: password}
 }
 
-// Post performs a POST request using the net/http client.
-// Logging is done to the provided logger
-func Post(log *logrus.Entry, path string, body interface{}, output interface{}) error {
-	if log == nil {
-		log = logrus.WithField("method", "httputils#Post")
-	}
-	return genericRequest(http.MethodPost, log, path, body, output)
-}
-
-// Put performs a PUT request using the net/http client.
-// Logging is done to the provided logger
-func Put(log *logrus.Entry, path string, body interface{}, output interface{}) error {
-	if log == nil {
-		log = logrus.WithField("method", "httputils#Put")
-	}
-	return genericRequest(http.MethodPut, log, path, body, output)
-}
-
-func genericRequest(method string, log *logrus.Entry, path string, input interface{}, output interface{}) error {
+func (c *Client) genericRequest(method string, log *logrus.Entry, path string, input interface{}, output interface{}) error {
 	var body io.Reader
 	if input == nil {
 		body = nil
@@ -80,7 +53,7 @@ func genericRequest(method string, log *logrus.Entry, path string, input interfa
 	if err != nil {
 		log.Panic("error creating request ", err)
 	}
-	addAuth(req)
+	c.addAuth(req)
 	req.Header.Set("Content-Type", "application/json")
 	res, err := client.Do(req)
 
@@ -117,8 +90,8 @@ func genericRequest(method string, log *logrus.Entry, path string, input interfa
 	return nil
 }
 
-func addAuth(request *http.Request) {
-	username := config.GetString(config.Username)
-	password := config.GetString(config.Password)
-	request.SetBasicAuth(username, password)
+func (c *Client) addAuth(request *http.Request) {
+	if c.Username != "" && c.Password != "" {
+		request.SetBasicAuth(c.Username, c.Password)
+	}
 }
