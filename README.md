@@ -1,3 +1,5 @@
+[![GoDoc](https://godoc.org/github.com/Bimde/httputils?status.svg)](https://godoc.org/github.com/Bimde/httputils)
+
 # httputils
 net/http wrapper for easy outbound http requests in go.
 
