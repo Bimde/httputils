@@ -1,6 +1,4 @@
-// Package httputils provides helper methods wrapping net/http.
-// If this package is going to be exported for public use, the panic logs should
-// be changed to errors and the dependency to config should be removed.
+// Package httputils is a net/http wrapper for easy outbound http requests.
 package httputils
 
 import (
@@ -51,7 +49,8 @@ func (c *Client) genericRequest(method string, log *logrus.Entry, path string, i
 
 	req, err := http.NewRequest(method, path, body)
 	if err != nil {
-		log.Panic("error creating request ", err)
+		log.Error("error creating request ", err)
+		return err
 	}
 	c.addAuth(req)
 	req.Header.Set("Content-Type", "application/json")
