@@ -29,9 +29,13 @@ type Client struct {
 	Password string
 }
 
-// New creates and returns a new Client with custom properties
-func New(username string, password string) *Client {
-	return &Client{Username: username, Password: password}
+// New creates and returns a new Client with custom options
+func New(options ...option) *Client {
+	c := Client{}
+	for _, o := range options {
+		o(&c)
+	}
+	return &c
 }
 
 func (c *Client) genericRequest(method string, log *logrus.Entry, path string, input interface{}, output interface{}) error {
